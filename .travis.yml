@@ -27,16 +27,25 @@ install:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   # Download Drush Composer extension
   - git clone --branch 8.x-1.x http://git.drupal.org/project/composer.git ~/.drush/composer
+  # Download and Install Drupal
   - drush dl drupal -y
   - cd drupal-*
   - drush si standard --db-url=mysql://root:@localhost/drupal -y
+  # Download Composer Manager and BehatRunner
+  - drush dl composer-manager -y
+  - drush dl behatrunner -y
  
 before_script:
+  # Enable Simpletest, Composer Manager and BehatRunner
   - drush en simpletest -y
+  - drush en composer-manager -y
+  - drush en behatrunner -l http://127.0.0.1:8080 -y
+  # Clear caches
   - drush cc all
+  # Run the lightweight http server
   - drush runserver --server=builtin 8080 &
   - sleep 4
-  - drush vset simpletest_verbose FALSE
 
-script: drush test-run Syslog --xml --uri=http://127.0.0.1:8080
-
+script: 
+  - drush test-run Syslog --xml -l http://127.0.0.1:8080
+  - drush brun -l http://127.0.0.1:8080 -v
