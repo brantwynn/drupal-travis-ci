@@ -27,16 +27,16 @@ install:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   # Download Drush Composer extension
   - git clone --branch 8.x-1.x http://git.drupal.org/project/composer.git ~/.drush/composer
-  
-before_script:
-  - drush dl --yes drupal
+  - drush dl drupal -y
   - cd drupal-*
-  - drush si standard --db-url=mysql://root:@localhost/drupal --yes
-  - drush en --yes simpletest
+  - drush si standard --db-url=mysql://root:@localhost/drupal -y
+ 
+before_script:
+  - drush en simpletest -y
   - drush cc all
   - drush runserver --server=builtin 8080 &
   - sleep 4
-  - drush vset --yes simpletest_verbose FALSE
+  - drush vset simpletest_verbose FALSE
 
 script: drush test-run Syslog --xml --uri=http://127.0.0.1:8080
 
