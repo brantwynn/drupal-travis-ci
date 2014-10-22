@@ -29,6 +29,7 @@ install:
   - git clone --branch 8.x-1.x http://git.drupal.org/project/composer.git ~/.drush/composer
   # Download and Install Drupal
   - drush dl drupal -y
+  - cp composer.json drupal-*/profiles/standard/.
   - cd drupal-*
   - drush si standard --db-url=mysql://root:@localhost/drupal -y
   # Download Composer Manager and BehatRunner
