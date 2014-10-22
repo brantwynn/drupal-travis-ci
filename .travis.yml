@@ -37,9 +37,16 @@ install:
   - drush dl behatrunner -y
  
 before_script:
-  # Enable Simpletest, Composer Manager and BehatRunner
+  # Enable Simpletest
   - drush en simpletest -y
+  # Enable Composer Manager, updating dependencies via source
+  - drush vset composer_manager_autobuild_file 0
+  - drush vset composer_manager_autobuild_packages 0
   - drush en composer_manager -y
+  - drush composer-manager install -n --prefer-source
+  # Enable BehatRunner, dependencies loading from cache
+  - drush vset composer_manager_autobuild_file 1
+  - drush vset composer_manager_autobuild_packages 1
   - drush en behatrunner -l http://127.0.0.1:8080 -y
   # Clear caches
   - drush cc all
