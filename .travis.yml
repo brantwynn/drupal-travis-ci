@@ -26,15 +26,18 @@ before_install:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   # Download Drush Composer extension
   - git clone --branch 8.x-1.x http://git.drupal.org/project/composer.git ~/.drush/composer
-
-install:
+  # Download and run Selenium Server
   - cd ..
-  - mv drupal-travis-ci fake_module
+  - wget http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar
+  - java -jar selenium-server-standalone-2.44.0.jar -port 4444 > /dev/null &
+  - until netstat -an 2>/dev/null | grep '4444.*LISTEN'; do sleep 0.2; done
+ 
+install:
   # Download and Install Drupal
+  - mv drupal-travis-ci fake_module
   - drush dl drupal -y
   - mv drupal-* drupal
   - mv fake_module drupal/sites/all/modules/.
-  - cp composer.json drupal/profiles/standard/.
   - cd drupal
   - drush si standard --db-url=mysql://root:@localhost/drupal -y
   # Download Composer Manager and BehatRunner
@@ -59,7 +62,7 @@ before_script:
   - drush cc all
   # Run the lightweight http server
   - drush runserver --server=builtin 8080 &
-  - sleep 4
+  - until netstat -an 2>/dev/null | grep '8080.*LISTEN'; do sleep 0.2; done
 
 script: 
   - drush test-run Syslog --xml -l http://127.0.0.1:8080
