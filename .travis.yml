@@ -9,7 +9,7 @@ mysql:
   encoding: utf8
 
 addons:
-  firefox: "8"
+  firefox: "8.0"
 
 before_install:
   # Run environmental updates
