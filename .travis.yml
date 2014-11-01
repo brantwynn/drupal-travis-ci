@@ -34,7 +34,10 @@ before_install:
   - wget http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar
   - java -jar selenium-server-standalone-2.44.0.jar -port 4444 > /dev/null &
   - until netstat -an 2>/dev/null | grep '4444.*LISTEN'; do sleep 0.2; done
- 
+  # Run X virtual framebuffer
+  - sh -e /etc/init.d/xvfb start
+  - export DISPLAY=:99.0
+
 install:
   # Download and Install Drupal
   - mv drupal-travis-ci fake_module
