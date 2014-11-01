@@ -8,8 +8,7 @@ mysql:
   username: root
   encoding: utf8
 
-install:
-  - pwd 
+before_install:
   # Run environmental updates
   - sudo apt-get update > /dev/null
   # Update composer
@@ -27,16 +26,24 @@ install:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   # Download Drush Composer extension
   - git clone --branch 8.x-1.x http://git.drupal.org/project/composer.git ~/.drush/composer
+
+install:
+  - cd ..
+  - mv drupal-travis-ci fake_module
   # Download and Install Drupal
   - drush dl drupal -y
-  - cp composer.json drupal-*/profiles/standard/.
-  - cd drupal-*
+  - mv drupal-* drupal
+  - mv fake_module drupal/sites/all/modules/.
+  - cp composer.json drupal/profiles/standard/.
+  - cd drupal
   - drush si standard --db-url=mysql://root:@localhost/drupal -y
   # Download Composer Manager and BehatRunner
   - drush dl composer_manager -y
   - drush dl behatrunner -y
  
 before_script:
+  # Enable the Fake Module
+  - drush en fake_module -y
   # Enable Simpletest
   - drush en simpletest -y
   # Enable Composer Manager, updating dependencies via source
