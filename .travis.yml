@@ -8,6 +8,9 @@ mysql:
   username: root
   encoding: utf8
 
+addons:
+  firefox: "29.0"
+
 before_install:
   # Run environmental updates
   - sudo apt-get update > /dev/null
