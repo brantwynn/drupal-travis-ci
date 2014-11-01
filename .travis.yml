@@ -9,7 +9,7 @@ mysql:
   encoding: utf8
 
 addons:
-  firefox: "29.0"
+  firefox: "8"
 
 before_install:
   # Run environmental updates
@@ -29,15 +29,15 @@ before_install:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   # Download Drush Composer extension
   - git clone --branch 8.x-1.x http://git.drupal.org/project/composer.git ~/.drush/composer
+  # Run X virtual framebuffer
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
   # Download and run Selenium Server
   - cd ..
-  - wget http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar
-  - java -jar selenium-server-standalone-2.44.0.jar -port 4444 > /dev/null &
+  - wget http://selenium.googlecode.com/files/selenium-server-standalone-2.31.0.jar
+  - java -jar selenium-server-standalone-2.31.0.jar -port 4444 > /dev/null &
   - until netstat -an 2>/dev/null | grep '4444.*LISTEN'; do sleep 0.2; done
-  # Run X virtual framebuffer
-  - sh -e /etc/init.d/xvfb start
-  - export DISPLAY=:99.0
-
+  
 install:
   # Download and Install Drupal
   - mv drupal-travis-ci fake_module
